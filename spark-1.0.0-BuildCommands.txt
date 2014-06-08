@@ -22,10 +22,15 @@ scala -version
 export SBT_HOME=/Users/srini/dev/sbt
 export PATH=$PATH:$SBT_HOME/bin
 
+export PYTHON_HOME=/Users/srini/dev/anaconda/bin/
+export PATH=$PATH:$PYTHON_HOME/bin
+
 
 set MAVEN_OPTS=-Xmx1024m -XX:MaxPermSize=512M -XX:ReservedCodeCacheSize=512m
 
 cd /Users/srini/dev/spark-1.0.0
+
+mvn clean
 
 mvn -Pyarn -Dhadoop.version=2.2.0 -Dyarn.version=2.2.0 -DskipTests clean package
 
