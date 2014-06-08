@@ -1,5 +1,5 @@
 
----------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------
 //
 //  Spark Build Commands:
 //
@@ -16,6 +16,12 @@ mvn -version
 
 export SCALA_HOME=/Users/srini/dev/scala-2.11.1
 export PATH=$PATH:$SCALA_HOME/bin
+
+scala -version
+
+export SBT_HOME=/Users/srini/dev/sbt
+export PATH=$PATH:$SBT_HOME/bin
+
 
 set MAVEN_OPTS=-Xmx1024m -XX:MaxPermSize=512M -XX:ReservedCodeCacheSize=512m
 

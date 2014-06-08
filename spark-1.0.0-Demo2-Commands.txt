@@ -1,0 +1,91 @@
+
+---------------------------------------------------------------------------------------------------------
+//
+//  Launch Spark Scala Shell:
+//
+
+c:
+REM set JAVA_HOME=c:\dev\java\jdk1.7.0_51
+set JAVA_HOME=c:\dev\java\jdk1.6.0_35
+set PATH=%PATH%;%JAVA_HOME%\bin
+
+set MAVEN_HOME=c:\dev\tools\apache-maven-3.0.4
+set PATH=%PATH%;%MAVEN_HOME%\bin
+
+set GIT_HOME=c:\dev\tools\Git
+set PATH=%PATH%;%GIT_HOME%\bin
+
+set SBT_HOME=c:\dev\tools\sbt\bin
+set PATH=%PATH%;%SBT_HOME%\bin
+
+set SCALA_HOME=C:\dev\languages\scala
+set PATH=%PATH%;%SCALA_HOME%\bin
+
+set MAVEN_OPTS=-Xmx1024m -XX:MaxPermSize=512M -XX:ReservedCodeCacheSize=512m
+
+cd c:\dev\servers\spark-1.0.0
+bin\spark-shell.cmd
+
+---------------------------------------------------------------------------------------------------------
+//
+// Spark Quick Start:
+// Reference: http://spark.apache.org/docs/latest/quick-start.html
+//
+
+val textFile = sc.textFile("README.md")
+
+// Number of items in this RDD
+textFile.count()
+
+// First item in this RDD
+textFile.first()
+
+// How many lines contain "Spark"?
+// Let’s use a transformation for this query.
+// We will use the filter transformation to return a new RDD with a subset of the items in the file.
+val linesWithSpark = textFile.filter(line => line.contains("Spark"))
+
+// How many lines contain "Spark"?
+// We can chain together transformations and actions:
+textFile.filter(line => line.contains("Spark")).count() 
+
+
+// RDD Operations
+// RDD actions and transformations can be used for more complex computations. 
+// Let's say we want to find the line with the most words:
+
+textFile.map(line => line.split(" ").size).reduce((a, b) => if (a > b) a else b)
+
+// This first maps a line to an integer value, creating a new RDD. 
+// reduce is called on that RDD to find the largest line count. 
+// The arguments to map and reduce are Scala function literals (closures), and can use any language feature or Scala/Java library. 
+// For example, we can easily call functions declared elsewhere. 
+
+// We’ll use Math.max() function to make this code easier to understand:
+import java.lang.Math
+
+textFile.map(line => line.split(" ").size).reduce((a, b) => Math.max(a, b))
+
+//
+// MapReduce
+//
+// One common data flow pattern is MapReduce, as popularized by Hadoop. 
+// Spark can implement MapReduce flows easily:
+
+val wordCounts = textFile.flatMap(line => line.split(" ")).map(word => (word, 1)).reduceByKey((a, b) => a + b)
+
+wordCounts.collect()
+
+//
+// Caching
+//
+
+// Spark also supports pulling data sets into a cluster-wide in-memory cache. 
+// This is very useful when data is accessed repeatedly, such as 
+// when querying a small “hot” dataset or when running an iterative algorithm like PageRank. 
+// As a simple example, let’s mark our linesWithSpark dataset to be cached:
+linesWithSpark.cache()
+
+
+linesWithSpark.count()
+

@@ -1,0 +1,207 @@
+
+---------------------------------------------------------------------------------------------------------
+//
+//  Launch Spark Scala Shell:
+//
+
+c:
+REM set JAVA_HOME=c:\dev\java\jdk1.7.0_51
+set JAVA_HOME=c:\dev\java\jdk1.6.0_35
+set PATH=%PATH%;%JAVA_HOME%\bin
+
+set MAVEN_HOME=c:\dev\tools\apache-maven-3.0.4
+set PATH=%PATH%;%MAVEN_HOME%\bin
+
+set GIT_HOME=c:\dev\tools\Git
+set PATH=%PATH%;%GIT_HOME%\bin
+
+set SBT_HOME=c:\dev\tools\sbt\bin
+set PATH=%PATH%;%SBT_HOME%\bin
+
+set SCALA_HOME=C:\dev\languages\scala
+set PATH=%PATH%;%SCALA_HOME%\bin
+
+set MAVEN_OPTS=-Xmx1024m -XX:MaxPermSize=512M -XX:ReservedCodeCacheSize=512m
+
+cd c:\dev\servers\spark-1.0.0
+bin\spark-shell.cmd
+
+---------------------------------------------------------------------------------------------------------
+//
+// Spark Examples
+//
+
+//
+// Tomcat logs example.
+//
+var logs = sc.textFile("c:/dev/servers/apache-tomcat-7.0.42/logs/")
+
+//logs.count
+
+val errors = logs.filter(_.contains("ERROR"))
+
+val seqad = errors.filter(_.contains("SequenceAdmin"))
+
+
+//
+// parallelized collection example
+// example used Scala interpreter (also called 'repl') as an interface to Spark
+//
+
+//
+// Scala Example # 1
+//
+sc.parallelize(1 to 1000).count()
+
+
+//
+// Scala Example # 2
+//
+
+// declare scala array:
+val data = Array(1, 2, 3, 4, 5)
+
+// distribute the array in a cluster:
+val distData = sc.parallelize(data)
+
+// sc is an instance of SparkCluster that's initialized for you by Scala repl
+// returns Resilient Distributed Dataset:
+Output:
+distData: spark.RDD[Int] = spark.ParallelCollection@88eebe8e  // repl output
+
+
+//
+// Scala Example # 3 - PI Example
+//
+
+val NUM_SAMPLES = 100000
+val count = sc.parallelize(1 to NUM_SAMPLES).map{i =>
+	val x = Math.random * 2 - 1
+	val y = Math.random * 2 - 1
+	if (x * x + y * y < 1) 1.0 else 0.0
+	}.reduce(_ + _)
+println("Pi is roughly " + 4 * count / NUM_SAMPLES)
+
+
+//
+// Scala Example # 4
+//
+val textFile = sc.textFile("README.md")
+
+textFile.count() // Number of items in this RDD
+
+textFile.first() // First item in this RDD
+
+val linesWithSpark = textFile.filter(line => line.contains("Spark"))
+
+linesWithSpark.count()
+
+or
+
+textFile.filter(line => line.contains("Spark")).count() // How many lines contain "Spark"?
+
+
+// RDD Operations
+
+// RDD actions and transformations can be used for more complex computations.
+// If we want to find the line with the most words:
+
+textFile.map(line => line.split(" ").size).reduce((a, b) => if (a > b) a else b)
+
+
+// Using Math Library
+
+import java.lang.Math
+textFile.map(line => line.split(" ").size).reduce((a, b) => Math.max(a, b))
+
+//
+//  Spark can implement MapReduce flows easily:
+//
+val wordCounts = textFile.flatMap(line => line.split(" ")).map(word => (word, 1)).reduceByKey((a, b) => a + b)
+
+
+// To collect the word counts in our shell, we can use the collect action:
+wordCounts.collect()
+
+//
+// Caching
+//
+
+linesWithSpark.cache()
+
+// Call the count method.
+linesWithSpark.count()
+
+// Call the count method again. This time, it should take lot less time because the data is already in the cache.
+linesWithSpark.count()
+
+
+//
+// To exit Scala Shell 
+//
+:q
+
+---------------------------------------------------------------------------------------------------------
+
+//
+//  Launch Spark Scala Shell:
+//
+
+c:
+REM set JAVA_HOME=c:\dev\java\jdk1.7.0_51
+set JAVA_HOME=c:\dev\java\jdk1.6.0_35
+set PATH=%PATH%;%JAVA_HOME%\bin
+
+set MAVEN_HOME=c:\dev\tools\apache-maven-3.0.4
+set PATH=%PATH%;%MAVEN_HOME%\bin
+
+set GIT_HOME=c:\dev\tools\Git
+set PATH=%PATH%;%GIT_HOME%\bin
+
+set SBT_HOME=c:\dev\tools\sbt\bin
+set PATH=%PATH%;%SBT_HOME%\bin
+
+set SCALA_HOME=C:\dev\languages\scala
+set PATH=%PATH%;%SCALA_HOME%\bin
+
+set MAVEN_OPTS=-Xmx1024m -XX:MaxPermSize=512M -XX:ReservedCodeCacheSize=512m
+
+cd c:\dev\servers\spark-1.0.0
+bin\spark-shell.cmd
+
+
+//
+// Interactive Analysis
+//
+
+sc
+
+
+// val pagecounts = sc.textFile("c:/dev/servers/spark-1.0.0/README.md")
+
+val pagecounts = sc.textFile("c:/dev/temp/pagecounts-20140601-000000")
+
+pagecounts.count
+
+pagecounts.take(10)
+
+pagecounts.take(10).foreach(println)
+
+//
+// To avoid reading from disks each time we perform any operations on the RDD, 
+// we also cache the RDD into memory. This is where Spark really starts to to shine.
+//
+
+val enPages = pagecounts.filter(_.split(" ")(1) == "en").cache
+
+enPages.count
+
+val enTuples = enPages.map(line => line.split(" "))
+
+val enKeyValuePairs = enTuples.map(line => (line(0).substring(0, 8), line(3).toInt))
+
+enKeyValuePairs.reduceByKey(_+_, 1).collect
+
+enPages.map(line => line.split(" ")).map(line => (line(0).substring(0, 8), line(3).toInt)).reduceByKey(_+_, 1).collect
+
+enPages.map(l => l.split(" ")).map(l => (l(2), l(3).toInt)).reduceByKey(_+_, 40).filter(x => x._2 > 200000).map(x => (x._2, x._1)).collect.foreach(println)
