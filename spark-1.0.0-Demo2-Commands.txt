@@ -26,7 +26,7 @@ set MAVEN_OPTS=-Xmx1024m -XX:MaxPermSize=512M -XX:ReservedCodeCacheSize=512m
 cd c:\dev\servers\spark-1.0.0
 bin\spark-shell.cmd
 
----------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
 //
 // Spark Quick Start:
 // Reference: http://spark.apache.org/docs/latest/quick-start.html
@@ -41,7 +41,7 @@ textFile.count()
 textFile.first()
 
 // How many lines contain "Spark"?
-// Letís use a transformation for this query.
+// Let‚Äôs use a transformation for this query.
 // We will use the filter transformation to return a new RDD with a subset of the items in the file.
 val linesWithSpark = textFile.filter(line => line.contains("Spark"))
 
@@ -61,7 +61,7 @@ textFile.map(line => line.split(" ").size).reduce((a, b) => if (a > b) a else b)
 // The arguments to map and reduce are Scala function literals (closures), and can use any language feature or Scala/Java library. 
 // For example, we can easily call functions declared elsewhere. 
 
-// Weíll use Math.max() function to make this code easier to understand:
+// We‚Äôll use Math.max() function to make this code easier to understand:
 import java.lang.Math
 
 textFile.map(line => line.split(" ").size).reduce((a, b) => Math.max(a, b))
@@ -82,8 +82,8 @@ wordCounts.collect()
 
 // Spark also supports pulling data sets into a cluster-wide in-memory cache. 
 // This is very useful when data is accessed repeatedly, such as 
-// when querying a small ìhotî dataset or when running an iterative algorithm like PageRank. 
-// As a simple example, letís mark our linesWithSpark dataset to be cached:
+// when querying a small ‚Äúhot‚Äù dataset or when running an iterative algorithm like PageRank. 
+// As a simple example, let‚Äôs mark our linesWithSpark dataset to be cached:
 linesWithSpark.cache()
 
 

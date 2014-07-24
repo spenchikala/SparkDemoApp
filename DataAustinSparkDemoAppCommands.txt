@@ -1,0 +1,100 @@
+
+---------------------------------------------------------------------------------
+//
+//  Launch Spark Scala Shell:
+//
+
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_60.jdk/Contents/Home
+export PATH=$PATH:$JAVA_HOME/bin
+
+java -version
+
+export M2_HOME=/Users/srini/dev/apache-maven-3.2.1
+export PATH=$PATH:$M2_HOME/bin
+
+mvn -version
+
+export SCALA_HOME=/Users/srini/dev/scala-2.11.1
+export PATH=$PATH:$SCALA_HOME/bin
+
+scala -version
+
+export SBT_HOME=/Users/srini/dev/sbt
+export PATH=$PATH:$SBT_HOME/bin
+
+export PYTHON_HOME=/Users/srini/dev/anaconda/bin/
+export PATH=$PATH:$PYTHON_HOME/bin
+
+export SPARK_HOME=/Users/srini/dev/spark-1.0.0
+export PATH=$PATH:$SPARK_HOME/bin
+
+export MAVEN_OPTS=-Xmx1024m -XX:MaxPermSize=512m -XX:ReservedCodeCacheSize=512m
+
+cd /Users/srini/SparkDemoApp/data
+
+spark-shell —master local[2]
+
+spark-shell
+
+# ./bin/spark-shell
+
+---------------------------------------------------------------------------------
+
+//
+//  Spark Example.
+//
+
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_60.jdk/Contents/Home
+export PATH=$PATH:$JAVA_HOME/bin
+
+java -version
+
+export M2_HOME=/Users/srini/dev/apache-maven-3.2.1
+export PATH=$PATH:$M2_HOME/bin
+
+mvn -version
+
+export SCALA_HOME=/Users/srini/dev/scala-2.11.1
+export PATH=$PATH:$SCALA_HOME/bin
+
+scala -version
+
+export SBT_HOME=/Users/srini/dev/sbt
+export PATH=$PATH:$SBT_HOME/bin
+
+export PYTHON_HOME=/Users/srini/dev/anaconda/bin/
+export PATH=$PATH:$PYTHON_HOME/bin
+
+export SPARK_HOME=/Users/srini/dev/spark-1.0.0
+export PATH=$PATH:$SPARK_HOME/bin
+
+export MAVEN_OPTS=-Xmx1024m -XX:MaxPermSize=512m -XX:ReservedCodeCacheSize=512m
+
+cd /Users/srini/dev/spark-1.0.0
+
+./bin/run-example SparkPi 10
+
+---------------------------------------------------------------------------------
+
+val format = new java.text.SimpleDateFormat("yyyy-MM-dd")
+
+
+case class Register (d: java.util.Date, uuid: String, cust_id: String, lat: Float, lng: Float)
+
+case class Click (d: java.util.Date, uuid: String, landing_page: Int)
+
+
+val reg = sc.textFile("data/reg.tsv").map(_.split("\t")).map(
+ r => (r(1), Register(format.parse(r(0)), r(1), r(2), r(3).toFloat, r(4).toFloat))
+)
+ 
+
+val clk = sc.textFile("data/clk.tsv").map(_.split("\t")).map(
+ c => (c(1), Click(format.parse(c(0)), c(1), c(2).trim.toInt))
+)
+ 
+reg.join(clk).take(2)
+
+
+reg.join(clk).toDebugString
+

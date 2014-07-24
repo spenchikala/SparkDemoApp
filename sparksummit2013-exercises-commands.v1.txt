@@ -33,6 +33,55 @@ cd /Users/srini/dev/spark-1.0.0
 
 
 ---------------------------------------------------------------------------------------------------
+scala
+
+val myNumbers = List(1, 2, 5, 4, 7, 3)
+
+def cube(a: Int): Int = a * a * a
+
+myNumbers.map(x => cube(x))
+
+or
+
+myNumbers.map(cube(_))
+
+or
+
+myNumbers.map(cube)
+
+
+myNumbers.map{x => x * x * x}
+
+
+def factorial(n:Int):Int = if (n==0) 1 else n * factorial(n-1) // From http://bit.ly/b2sVKI
+
+myNumbers.map(factorial).sum
+
+
+import scala.io.Source
+val lines = Source.fromFile("README.md").getLines.toArray
+
+val counts = new collection.mutable.HashMap[String, Int].withDefaultValue(0)
+
+counts
+
+lines.flatMap(line => line.split(" ")).foreach(word => counts(word) += 1)
+
+counts
+
+
+import scala.io.Source
+val lines = Source.fromFile("README.md").getLines.toArray
+
+val emptyCounts = Map[String,Int]().withDefaultValue(0)
+
+val words = lines.flatMap(line => line.split(" "))
+
+val counts = words.foldLeft(emptyCounts)({(currentCounts: Map[String,Int], word: String) => currentCounts.updated(word, currentCounts(word) + 1)})
+
+counts
+
+---------------------------------------------------------------------------------------------------
 //
 // Spark Examples
 //

@@ -25,8 +25,7 @@ export PATH=$PATH:$SBT_HOME/bin
 export PYTHON_HOME=/Users/srini/dev/anaconda/bin/
 export PATH=$PATH:$PYTHON_HOME/bin
 
-
-set MAVEN_OPTS=-Xmx1024m -XX:MaxPermSize=512M -XX:ReservedCodeCacheSize=512m
+export MAVEN_OPTS=-Xmx1024m -XX:MaxPermSize=512m -XX:ReservedCodeCacheSize=512m
 
 cd /Users/srini/dev/spark-1.0.0
 
@@ -46,7 +45,7 @@ mvn eclipse:clean eclipse:eclipse package
 
 mvn clean eclipse:clean eclipse:eclipse package
 
----------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------
 //
 //  SBT Build Commands:
 //
@@ -76,6 +75,6 @@ sbt assembly
 
 sbt package
 
----------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
 
 
